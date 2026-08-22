@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,171 +8,143 @@
     <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <style>
         body {
-  margin: 0;
-  min-height: 100vh;
+            margin: 0;
+            min-height: 100vh;
 
-  justify-content: center;
-  align-items: center;
+            justify-content: center;
+            align-items: center;
 
-  background: linear-gradient(135deg, #5b5bf7, #00c6ff);
+            background: linear-gradient(135deg, #5b5bf7, #00c6ff);
         }
 
         #question {
-  width: 50%;
-  min-height: 150px;
-  padding: 16px;
+            width: 50%;
+            min-height: 150px;
+            padding: 16px;
 
-  box-sizing: border-box;
-  resize: none;
+            box-sizing: border-box;
+            resize: none;
 
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 18px;
 
-  background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.15);
 
-  color: white;
-  font-size: 16px;
-  font-family: inherit;
+            color: white;
+            font-size: 16px;
+            font-family: inherit;
 
-  outline: none;
+            outline: none;
 
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
 
-  box-shadow:
-    0 8px 30px rgba(0, 0, 0, 0.15),
-    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.5);
 
-  transition: 0.2s ease;
-}
+            transition: 0.2s ease;
+        }
 
-/* 플레이스홀더 */
-#question::placeholder {
-  color: rgba(255, 255, 255, 0.65);
-}
+        /* 플레이스홀더 */
+        #question::placeholder {
+            color: rgba(255, 255, 255, 0.65);
+        }
 
-/* 클릭했을 때 */
-#question:focus {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.65);
+        /* 클릭했을 때 */
+        #question:focus {
+            background: rgba(255, 255, 255, 0.22);
+            border-color: rgba(255, 255, 255, 0.65);
 
-  box-shadow:
-    0 8px 30px rgba(0, 0, 0, 0.18),
-    inset 0 1px 1px rgba(255, 255, 255, 0.6),
-    0 0 20px rgba(255, 255, 255, 0.1);
-}
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.18),
+                inset 0 1px 1px rgba(255, 255, 255, 0.6),
+                0 0 20px rgba(255, 255, 255, 0.1);
+        }
 
         button {
-  padding: 12px 24px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 16px;
-  
+            padding: 12px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 16px;
 
-  /* 유리 느낌 */
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
 
-  /* 입체감 */
-  box-shadow:
-    0 8px 25px rgba(0, 0, 0, 0.15),
-    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+            /* 유리 느낌 */
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
 
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
+            /* 입체감 */
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.5);
 
-  cursor: pointer;
-  transition: 0.2s ease;
-}
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
 
-button:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
-}
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
 
-button:active {
-  transform: scale(0.96);
-}
+        button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
         small {
             opacity: 0.5;
         }
-        *{
+
+        * {
             text-align: center;
             font-family: 'Jua', sans-serif;
         }
     </style>
 </head>
+
 <body>
     <h1><strong>질문 페이지 (beta)</strong></h1>
-   <h1>저한테 아무거나 물어보세요</h1>
-   <h2>개발,취미,버그 등등 물어보셔도 됩니다. <small>답변은 메인페이지에서 해드리겠습니다</small> </h2>
-   <small>보내주신 질문은 개발자의 텔레그렘으로 전송됩니다.</small>
-   <br>
-   <br>
-   <textarea id="question" placeholder="궁금한 점을 적어주세요"></textarea>
-   <br>
-   <br>
-<button id="sendButton" onclick="sendQuestion()" style="color: black;">보내기</button>
+    <h1>저한테 아무거나 물어보세요</h1>
+    <h2>개발,취미,버그 등등 물어보셔도 됩니다. <small>답변은 메인페이지에서 해드리겠습니다</small> </h2>
+    <small>보내주신 질문은 개발자의 텔레그렘으로 전송됩니다.</small>
+    <br>
+    <br>
+    <textarea id="question" placeholder="궁금한 점을 적어주세요"></textarea>
+    <br>
+    <br>
+    <button onclick="sendQuestion()" style="color: black;">보내기</button>
 
-<script>
-let cooldown = false;
+    <script>
+        async function sendQuestion() {
+            const question = document.getElementById("question").value;
 
-async function sendQuestion() {
-    if (cooldown) return;
+            if (!question.trim()) {
+                alert("질문을 입력해주세요!");
+                return;
+            }
 
-    cooldown = true;
+            const response = await fetch("/.netlify/functions/telegram", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    question: question
+                })
+            });
 
-    const button = document.getElementById("sendButton");
-    button.disabled = true;
-
-    // 여기서 네 질문 전송 코드 실행
-    console.log("질문 전송!");
-
-    // 10초 쿨타임
-    let time = 10;
-    button.textContent = `다시 보내기 (${time}초)`;
-
-    const timer = setInterval(() => {
-        time--;
-
-        if (time <= 0) {
-            clearInterval(timer);
-            cooldown = false;
-            button.disabled = false;
-            button.textContent = "보내기";
-        } else {
-            button.textContent = `다시 보내기 (${time}초)`;
+            if (response.ok) {
+                alert("질문이 전송되었습니다!");
+                document.getElementById("question").value = "";
+            } else {
+                alert("전송에 실패했습니다.");
+            }
         }
-    }, 1000);
-}
-</script>
-<script>
-async function sendQuestion() {
-    const question = document.getElementById("question").value;
-
-    if (!question.trim()) {
-        alert("질문을 입력해주세요!");
-        return;
-    }
-
-    const response = await fetch("/.netlify/functions/telegram", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            question: question
-        })
-    });
-
-    if (response.ok) {
-        alert("질문이 전송되었습니다!");
-        document.getElementById("question").value = "";
-    } else {
-        alert("전송에 실패했습니다.");
-    }
-}
-</script>
+    </script>
 </body>
+
 </html>
