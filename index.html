@@ -8,6 +8,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>soloon's Website</title>
     <style>
+     /* 로그인 후 오른쪽 위 프로필 */
+.user-menu {
+  position: absolute;
+  top: 58px;
+  right: 0;
+
+  min-width: 140px;
+  padding: 8px;
+
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 18px;
+
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+  display: none;
+}
+
+.user-menu.show {
+  display: block;
+}
+
+#logoutBtn {
+  width: 100%;
+
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+
+  color: #161616;
+  padding: 12px 18px;
+
+  font-size: 14px;
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+#logoutBtn:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
+#userPhoto {
+  width: 44px;
+  height: 44px;
+
+  border-radius: 50%;
+  object-fit: cover;
+
+  cursor: pointer;
+
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    inset 0 0 10px rgba(255, 255, 255, 0.3);
+
+  transition: all 0.3s ease;
+}
+
+#userPhoto:hover {
+  transform: scale(1.08);
+}
       /* CSS */
 .google-glass-btn {
   background: rgba(255, 255, 255, 0.25); 
@@ -202,8 +268,17 @@
 </div>
 <meta name="google-adsense-account" content="ca-pub-5387234713197129">
 <small style="opacity: 0.5;"> git 안쓰다 파일 날라감 ;; </small>
+<!-- 로그인된 사용자 프로필 -->
+<div id="userProfile" class="user-profile">
+  <img id="userPhoto" src="" alt="프로필">
+  
+  <div id="userMenu" class="user-menu">
+    <button id="logoutBtn">로그아웃</button>
+  </div>
+</div>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
   import {
     getAuth,
     GoogleAuthProvider,
@@ -212,7 +287,8 @@
     signOut
   } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-  // 🔥 여기에 Firebase 설정 넣기
+
+  // 🔥 Firebase 설정
   const firebaseConfig = {
     apiKey: "AIzaSyBJkZHrq88G6aCA6xdbW4SkbLj1JjKJ5jc",
     authDomain: "soloon-bbb26.firebaseapp.com",
@@ -222,15 +298,31 @@
     appId: "1:122401584098:web:2181d68f54e64d2f6e7fbb"
   };
 
+
+  // Firebase 시작
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
+
+  // HTML 요소
   const googleLoginBtn = document.getElementById("googleLoginBtn");
 
+  const userProfile = document.getElementById("userProfile");
+  const userPhoto = document.getElementById("userPhoto");
+
+  const userMenu = document.getElementById("userMenu");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+
+  // =========================
   // Google 로그인
+  // =========================
+
   googleLoginBtn.addEventListener("click", async () => {
+
     try {
+
       const result = await signInWithPopup(auth, provider);
 
       const user = result.user;
@@ -238,30 +330,104 @@
       console.log("로그인 성공!");
       console.log("이름:", user.displayName);
       console.log("이메일:", user.email);
-      console.log("프로필 사진:", user.photoURL);
-
-      alert(`${user.displayName}님, 로그인 성공!`);
 
     } catch (error) {
+
       console.error("로그인 오류:", error);
+
       alert("로그인에 실패했습니다.");
+
     }
+
   });
 
+
+  // =========================
   // 로그인 상태 확인
+  // =========================
+
   onAuthStateChanged(auth, (user) => {
+
     if (user) {
+
       console.log("현재 로그인:", user.displayName);
 
-      googleLoginBtn.querySelector(".btn-text").textContent =
-        `${user.displayName}님 로그인됨`;
+
+      // 로그인 버튼 숨기기
+      googleLoginBtn.style.display = "none";
+
+
+      // 프로필 사진 표시
+      userProfile.style.display = "block";
+
+      userPhoto.src = user.photoURL;
+
+
     } else {
+
       console.log("로그아웃 상태");
 
-      googleLoginBtn.querySelector(".btn-text").textContent =
-        "Google 계정으로 로그인";
+
+      // 로그인 버튼 다시 표시
+      googleLoginBtn.style.display = "";
+
+
+      // 프로필 숨기기
+      userProfile.style.display = "none";
+
+
+      // 메뉴 닫기
+      userMenu.classList.remove("show");
+
     }
+
   });
+
+
+  // =========================
+  // 프로필 사진 클릭
+  // =========================
+
+  userPhoto.addEventListener("click", (event) => {
+
+    event.stopPropagation();
+
+    userMenu.classList.toggle("show");
+
+  });
+
+
+  // =========================
+  // 로그아웃
+  // =========================
+
+  logoutBtn.addEventListener("click", async () => {
+
+    try {
+
+      await signOut(auth);
+
+      console.log("로그아웃 완료");
+
+    } catch (error) {
+
+      console.error("로그아웃 오류:", error);
+
+    }
+
+  });
+
+
+  // =========================
+  // 화면 다른 곳 클릭하면 메뉴 닫기
+  // =========================
+
+  document.addEventListener("click", () => {
+
+    userMenu.classList.remove("show");
+
+  });
+
 </script>
 </body>
 </html>
