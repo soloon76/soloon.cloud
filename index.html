@@ -328,66 +328,81 @@
 
     <script type="module">
 
-      import { initializeApp }
-        from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-      import {
-        getAuth,
-        GoogleAuthProvider,
-        signInWithPopup,
-        onAuthStateChanged,
-        signOut
-      } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+  // =========================
+  // Firebase 설정
+  // =========================
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBJkZHrq88G6aCA6xdbW4SkbLj1JjKJ5jc",
+    authDomain: "soloon-bbb26.firebaseapp.com",
+    projectId: "soloon-bbb26",
+    storageBucket: "soloon-bbb26.firebasestorage.app",
+    messagingSenderId: "122401584098",
+    appId: "1:122401584098:web:2181d68f54e64d2f6e7fbb"
+  };
+
+
+  // =========================
+  // Firebase 시작
+  // =========================
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+
+  // =========================
+  // HTML 요소
+  // =========================
+
+  const googleLoginBtn = document.getElementById("googleLoginBtn");
+
+  const userProfile = document.getElementById("userProfile");
+  const userPhoto = document.getElementById("userPhoto");
+
+  const userMenu = document.getElementById("userMenu");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+
+  // =========================
+  // Google 로그인
+  // =========================
+
+  googleLoginBtn.addEventListener("click", async () => {
+
+    try {
+
+      // Firebase Google 로그인
+      const result = await signInWithPopup(auth, provider);
+
+      const user = result.user;
+
+      console.log("✅ 로그인 성공!");
+      console.log("이름:", user.displayName);
+      console.log("이메일:", user.email);
 
 
       // =========================
-      // Firebase 설정
+      // Telegram 알림
       // =========================
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyBJkZHrq88G6aCA6xdbW4SkbLj1JjKJ5jc",
-        authDomain: "soloon-bbb26.firebaseapp.com",
-        projectId: "soloon-bbb26",
-        storageBucket: "soloon-bbb26.firebasestorage.app",
-        messagingSenderId: "122401584098",
-        appId: "1:122401584098:web:2181d68f54e64d2f6e7fbb"
-      };
+      try {
 
-
-      const app = initializeApp(firebaseConfig);
-
-      const auth = getAuth(app);
-
-      const provider = new GoogleAuthProvider();
-
-
-      // =========================
-      // HTML 요소
-      // =========================
-
-      const googleLogin = document.getElementById("googleLogin");
-      const logout = document.getElementById("logout");
-      const userInfo = document.getElementById("userInfo");
-
-
-      // =========================
-      // Google 로그인
-      // =========================
-
-      googleLogin.addEventListener("click", async () => {
-
-        try {
-
-          const result = await signInWithPopup(auth, provider);
-
-          const user = result.user;
-
-          console.log("로그인 성공:", user);
-
-
-          // Netlify Function으로 로그인 정보 전송
-          const response = await fetch("/.netlify/functions/telegram-login", {
-
+        const response = await fetch(
+          "/.netlify/functions/telegram-login",
+          {
             method: "POST",
 
             headers: {
@@ -395,79 +410,167 @@
             },
 
             body: JSON.stringify({
-
               name: user.displayName,
               email: user.email,
               photo: user.photoURL
-
             })
-
-          });
-
-
-          const data = await response.json();
-
-          console.log("Telegram 전송 결과:", data);
+          }
+        );
 
 
-        } catch (error) {
+        const resultText = await response.text();
 
-          console.error("로그인 오류:", error);
-
-          alert("로그인에 실패했습니다.");
-
-        }
-
-      });
+        console.log(
+          "Telegram Function 응답:",
+          resultText
+        );
 
 
-      // =========================
-      // 로그인 상태 확인
-      // =========================
+        if (!response.ok) {
 
-      onAuthStateChanged(auth, (user) => {
-
-        if (user) {
-
-          googleLogin.style.display = "none";
-          logout.style.display = "block";
-
-          userInfo.innerHTML = `
-          <strong>${user.displayName}</strong><br>
-          ${user.email}
-        `;
+          console.error(
+            "❌ Telegram 전송 실패:",
+            response.status
+          );
 
         } else {
 
-          googleLogin.style.display = "block";
-          logout.style.display = "none";
-
-          userInfo.textContent = "로그인하지 않았습니다.";
-
-        }
-
-      });
-
-
-      // =========================
-      // 로그아웃
-      // =========================
-
-      logout.addEventListener("click", async () => {
-
-        try {
-
-          await signOut(auth);
-
-        } catch (error) {
-
-          console.error(error);
+          console.log(
+            "✅ Telegram 알림 전송 성공!"
+          );
 
         }
 
-      });
+      } catch (telegramError) {
 
-    </script>
+        // Telegram 오류가 나도
+        // Google 로그인에는 영향 없음
+
+        console.error(
+          "❌ Telegram 오류:",
+          telegramError
+        );
+
+      }
+
+
+    } catch (error) {
+
+      console.error(
+        "❌ Google 로그인 오류:",
+        error
+      );
+
+      alert(
+        "Google 로그인에 실패했습니다.\n\n" +
+        error.message
+      );
+
+    }
+
+  });
+
+
+  // =========================
+  // 로그인 상태 확인
+  // =========================
+
+  onAuthStateChanged(auth, (user) => {
+
+    if (user) {
+
+      console.log(
+        "현재 로그인:",
+        user.displayName
+      );
+
+
+      // 로그인 버튼 숨기기
+      googleLoginBtn.style.display = "none";
+
+
+      // 프로필 표시
+      userProfile.style.display = "block";
+
+
+      // 프로필 사진
+      userPhoto.src =
+        user.photoURL || "";
+
+
+    } else {
+
+      console.log(
+        "로그아웃 상태"
+      );
+
+
+      // 로그인 버튼 다시 표시
+      googleLoginBtn.style.display = "";
+
+
+      // 프로필 숨기기
+      userProfile.style.display = "none";
+
+
+      // 메뉴 닫기
+      userMenu.classList.remove("show");
+
+    }
+
+  });
+
+
+  // =========================
+  // 프로필 사진 클릭
+  // =========================
+
+  userPhoto.addEventListener("click", (event) => {
+
+    event.stopPropagation();
+
+    userMenu.classList.toggle("show");
+
+  });
+
+
+  // =========================
+  // 로그아웃
+  // =========================
+
+  logoutBtn.addEventListener("click", async () => {
+
+    try {
+
+      await signOut(auth);
+
+      console.log(
+        "로그아웃 완료"
+      );
+
+    } catch (error) {
+
+      console.error(
+        "로그아웃 오류:",
+        error
+      );
+
+    }
+
+  });
+
+
+  // =========================
+  // 화면 다른 곳 클릭
+  // =========================
+
+  document.addEventListener("click", () => {
+
+    userMenu.classList.remove("show");
+
+  });
+
+</script>
   </body>
 
   </html>
