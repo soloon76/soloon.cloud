@@ -112,8 +112,40 @@ button:active {
    <textarea id="question" placeholder="궁금한 점을 적어주세요"></textarea>
    <br>
    <br>
-<button onclick="sendQuestion()" style="color: black;">보내기</button>
+<button id="sendButton" onclick="sendQuestion()" style="color: black;">보내기</button>
 
+<script>
+let cooldown = false;
+
+async function sendQuestion() {
+    if (cooldown) return;
+
+    cooldown = true;
+
+    const button = document.getElementById("sendButton");
+    button.disabled = true;
+
+    // 여기서 네 질문 전송 코드 실행
+    console.log("질문 전송!");
+
+    // 10초 쿨타임
+    let time = 10;
+    button.textContent = `다시 보내기 (${time}초)`;
+
+    const timer = setInterval(() => {
+        time--;
+
+        if (time <= 0) {
+            clearInterval(timer);
+            cooldown = false;
+            button.disabled = false;
+            button.textContent = "보내기";
+        } else {
+            button.textContent = `다시 보내기 (${time}초)`;
+        }
+    }, 1000);
+}
+</script>
 <script>
 async function sendQuestion() {
     const question = document.getElementById("question").value;
