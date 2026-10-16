@@ -1,0 +1,414 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101116">
+  <title>Soloon_bot 이용권 신청</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      background: #101116;
+      color: #f7f7fb;
+      font-family: Arial, sans-serif;
+    }
+
+    main {
+      max-width: 490px;
+      margin: 25px auto;
+    }
+
+    .logo {
+      color: #a99aff;
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    .eyebrow {
+      margin-top: 30px;
+      color: #a99aff;
+      font-size: 11px;
+      letter-spacing: 2px;
+    }
+
+    h1 { font-size: 29px; }
+
+    .description {
+      color: #aaaab8;
+      line-height: 1.8;
+    }
+
+    .card {
+      padding: 24px;
+      background: #1b1c25;
+      border: 1px solid #343541;
+      border-radius: 20px;
+    }
+
+    .heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .plan-label {
+      color: #a99aff;
+      font-size: 11px;
+    }
+
+    .price {
+      margin: 22px 0;
+      font-size: 31px;
+      font-weight: bold;
+    }
+
+    .price small {
+      color: #aaa;
+      font-size: 14px;
+      font-weight: normal;
+    }
+
+    .features {
+      padding-left: 20px;
+      color: #ddd;
+      line-height: 2;
+      font-size: 14px;
+    }
+
+    hr {
+      margin: 24px 0;
+      border: 0;
+      border-top: 1px solid #383945;
+    }
+
+    label {
+      display: block;
+      margin: 18px 0 8px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px;
+      background: #111219;
+      color: white;
+      border: 1px solid #424351;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid #7966ff;
+    }
+
+    .price-box {
+      margin-top: 24px;
+      padding: 17px;
+      background: #252438;
+      border-radius: 12px;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 12px 0;
+      font-size: 14px;
+    }
+
+    .total {
+      padding-top: 16px;
+      border-top: 1px solid #48445f;
+      font-weight: bold;
+    }
+
+    #totalPrice {
+      color: #b8aaff;
+      font-size: 21px;
+    }
+
+    .notice {
+      margin-top: 18px;
+      padding: 15px;
+      background: #24252f;
+      border-radius: 12px;
+      color: #d1d1dc;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .notice p { margin: 7px 0 0; }
+
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 16px;
+      background: #7966ff;
+      color: white;
+      border: none;
+      border-radius: 11px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover { background: #8978ff; }
+    button:disabled { opacity: .6; cursor: wait; }
+
+    #statusMessage {
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    footer {
+      margin-top: 24px;
+      color: #777886;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    @media (max-width: 400px) {
+      .card { padding: 18px; }
+      h1 { font-size: 26px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <header>
+      <div class="logo">🤖 Soloon_bot</div>
+      <p class="eyebrow">PREMIUM MEMBERSHIP</p>
+      <h1>이용권 신청</h1>
+      <p class="description">
+        Soloon_bot의 유료 기능을 이용해 보세요.<br>
+        원하는 기간을 선택하고 신청하세요.
+      </p>
+    </header>
+
+    <section class="card">
+      <div class="heading">
+        <div>
+          <span class="plan-label">PRO MEMBERSHIP</span>
+          <h2>Soloon Pro</h2>
+        </div>
+        <span style="font-size:30px;color:#a99aff">✦</span>
+      </div>
+
+      <div class="price">2,000원 <small>/ 월</small></div>
+
+      <ul class="features">
+        <li>Pro 이용권</li>
+        <li>1~6개월 이용 기간 선택</li>
+        <li>관리자 확인 후 활성화</li>
+      </ul>
+
+      <hr>
+
+      <form id="paymentForm">
+        <label for="months">이용 기간</label>
+        <select id="months" required>
+          <option value="1">1개월</option>
+          <option value="2">2개월</option>
+          <option value="3">3개월</option>
+          <option value="4">4개월</option>
+          <option value="5">5개월</option>
+          <option value="6">6개월</option>
+        </select>
+
+        <label for="roomLink">카카오톡 방 링크</label>
+        <input
+          id="roomLink"
+          type="url"
+          placeholder="https://open.kakao.com/..."
+          maxlength="500"
+          required
+        >
+
+        <label for="depositor">입금자명</label>
+        <input
+          id="depositor"
+          type="text"
+          placeholder="실제 입금할 사람 이름"
+          maxlength="50"
+          required
+        >
+
+        <div class="price-box">
+          <div class="price-row">
+            <span>이용료</span>
+            <span id="usagePrice">2,000원</span>
+          </div>
+
+          <div class="price-row">
+            <span>신청 수수료</span>
+            <span>500원</span>
+          </div>
+
+          <div class="price-row total">
+            <span>총 결제 금액</span>
+            <span id="totalPrice">2,500원</span>
+          </div>
+        </div>
+
+        <div class="notice">
+          <strong>📌 신청 전 확인</strong>
+          <p>• 입금 후 관리자 확인을 거쳐 이용권이 활성화됩니다.</p>
+          <p>• 관리자 확인까지 1~2일 정도 걸릴 수 있습니다.</p>
+          <p>• 입금자명과 카카오톡 방 링크를 정확히 입력해 주세요.</p>
+        </div>
+
+        <button id="submitBtn" type="submit">
+          결제 신청하기 →
+        </button>
+
+        <p id="statusMessage" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <footer>Soloon_bot · 이용권 관리 서비스</footer>
+  </main>
+
+  <script>
+    // 기존 Netlify 텔레그램 함수 주소
+    const TELEGRAM_API = "/.netlify/functions/telegram";
+
+    const form = document.getElementById("paymentForm");
+    const monthsInput = document.getElementById("months");
+    const roomLinkInput = document.getElementById("roomLink");
+    const depositorInput = document.getElementById("depositor");
+    const usagePrice = document.getElementById("usagePrice");
+    const totalPrice = document.getElementById("totalPrice");
+    const submitBtn = document.getElementById("submitBtn");
+    const statusMessage = document.getElementById("statusMessage");
+
+    const MONTHLY_PRICE = 2000;
+    const APPLICATION_FEE = 500;
+
+    function won(amount) {
+      return amount.toLocaleString("ko-KR") + "원";
+    }
+
+    // 이용 기간에 따라 금액 계산
+    function updatePrice() {
+      const months = Number(monthsInput.value);
+      const usage = months * MONTHLY_PRICE;
+
+      usagePrice.textContent = won(usage);
+      totalPrice.textContent = won(usage + APPLICATION_FEE);
+    }
+
+    // 카카오톡 오픈채팅 링크 확인
+    function validRoomLink(value) {
+      try {
+        const url = new URL(value);
+
+        return url.protocol === "https:" &&
+          ["open.kakao.com", "chat.kakao.com"].includes(url.hostname);
+      } catch {
+        return false;
+      }
+    }
+
+    monthsInput.addEventListener("change", updatePrice);
+
+    // 신청 정보를 기존 Netlify 함수로 전송
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const months = Number(monthsInput.value);
+      const roomLink = roomLinkInput.value.trim();
+      const depositor = depositorInput.value.trim();
+
+      if (!Number.isInteger(months) || months < 1 || months > 6) {
+        statusMessage.textContent = "이용 기간을 확인해 주세요.";
+        return;
+      }
+
+      if (!validRoomLink(roomLink)) {
+        statusMessage.textContent =
+          "올바른 카카오톡 오픈채팅 링크를 입력해 주세요.";
+        return;
+      }
+
+      if (!depositor || depositor.length > 50) {
+        statusMessage.textContent = "입금자명을 입력해 주세요.";
+        return;
+      }
+
+      const usage = months * MONTHLY_PRICE;
+      const total = usage + APPLICATION_FEE;
+
+      const message = [
+        "🧾 Soloon_bot 이용권 신청",
+        "",
+        "카카오톡 방 링크: " + roomLink,
+        "입금자명: " + depositor,
+        "이용 기간: " + months + "개월",
+        "이용료: " + won(usage),
+        "신청 수수료: " + won(APPLICATION_FEE),
+        "총 결제 금액: " + won(total),
+        "",
+        "상태: 관리자 확인 대기",
+        "관리자 확인까지 1~2일 정도 걸릴 수 있습니다."
+      ].join("\n");
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "신청 전송 중...";
+      statusMessage.textContent = "";
+
+      try {
+        const response = await fetch(TELEGRAM_API, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            question: message
+          })
+        });
+
+        const responseText = await response.text();
+        let result = {};
+
+        try {
+          result = JSON.parse(responseText);
+        } catch {}
+
+        if (
+          !response.ok ||
+          result.ok === false ||
+          result.success === false
+        ) {
+          throw new Error("텔레그램 전송 요청 실패");
+        }
+
+        statusMessage.textContent =
+          "✅ 신청 정보 전송 요청이 완료되었습니다. " +
+          "관리자 확인까지 1~2일 정도 걸릴 수 있습니다.";
+
+        form.reset();
+        updatePrice();
+
+      } catch (error) {
+        console.error(error);
+
+        statusMessage.textContent =
+          "❌ 신청 전송에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "결제 신청하기 →";
+      }
+    });
+
+    updatePrice();
+  </script>
+</body>
+</html>

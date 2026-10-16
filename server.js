@@ -17,3 +17,7 @@ app.get('/about', function(req, res){
 app.get('/askme', function(req, res){
     res.sendFile(__dirname + '/askme.html');
 });
+
+app.get('/soloon_bot', function(req, res){
+    res.sendFile(__dirname + '/soloon_bot.html');
+});
