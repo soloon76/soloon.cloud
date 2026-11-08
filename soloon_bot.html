@@ -185,19 +185,17 @@
   <main>
     <header>
       <div class="logo">🤖 Soloon_bot</div>
-      <p class="eyebrow">PREMIUM MEMBERSHIP</p>
       <h1>이용권 신청</h1>
       <p class="description">
-        Soloon_bot의 유료 기능을 이용해 보세요.<br>
-        원하는 기간을 선택하고 신청하세요.
+        Soloon_bot을 이용해 보세요.<br>
+        원하는 구독제를 선택하고 신청하세요.
       </p>
     </header>
 
     <section class="card">
       <div class="heading">
         <div>
-          <span class="plan-label">PRO MEMBERSHIP</span>
-          <h2>Soloon Pro</h2>
+          <h2>Soloon_bot</h2>
         </div>
         <span style="font-size:30px;color:#a99aff">✦</span>
       </div>
@@ -206,8 +204,8 @@
 
       <ul class="features">
         <li>Pro 이용권</li>
-        <li>1~6개월 이용 기간 선택</li>
-        <li>관리자 확인 후 활성화</li>
+        <li>영구,월,일 중에 선택</li>
+        <li>입금 확인 후 관리자가 활성화</li>
       </ul>
 
       <hr>
@@ -215,12 +213,12 @@
       <form id="paymentForm">
         <label for="months">이용 기간</label>
         <select id="months" required>
-          <option value="1">1개월</option>
-          <option value="2">2개월</option>
+          <option value="1">영구</option>
+          <option value="2">1개월</option>
           <option value="3">3개월</option>
-          <option value="4">4개월</option>
-          <option value="5">5개월</option>
-          <option value="6">6개월</option>
+          <option value="4">6개월</option>
+          <option value="5">3일</option>
+          <option value="6">10일</option>
         </select>
 
         <label for="roomLink">카카오톡 방 링크</label>
@@ -247,11 +245,6 @@
             <span id="usagePrice">2,000원</span>
           </div>
 
-          <div class="price-row">
-            <span>신청 수수료</span>
-            <span>500원</span>
-          </div>
-
           <div class="price-row total">
             <span>총 결제 금액</span>
             <span id="totalPrice">2,500원</span>
@@ -261,7 +254,7 @@
         <div class="notice">
           <strong>📌 신청 전 확인</strong>
           <p>• 입금 후 관리자 확인을 거쳐 이용권이 활성화됩니다.</p>
-          <p>• 관리자 확인까지 1~2일 정도 걸릴 수 있습니다.</p>
+          <p>• 관리자 확인까지 5시간 정도 걸릴 수 있습니다.</p>
           <p>• 입금자명과 카카오톡 방 링크를 정확히 입력해 주세요.</p>
         </div>
 
@@ -290,7 +283,7 @@
     const statusMessage = document.getElementById("statusMessage");
 
     const MONTHLY_PRICE = 2000;
-    const APPLICATION_FEE = 500;
+    
 
     function won(amount) {
       return amount.toLocaleString("ko-KR") + "원";
@@ -298,11 +291,10 @@
 
     // 이용 기간에 따라 금액 계산
     function updatePrice() {
-      const months = Number(monthsInput.value);
-      const usage = months * MONTHLY_PRICE;
+      const usage = getSlectedPrice();
 
       usagePrice.textContent = won(usage);
-      totalPrice.textContent = won(usage + APPLICATION_FEE);
+      totalPrice.textContent = won(usage);
     }
 
     // 카카오톡 오픈채팅 링크 확인
@@ -392,7 +384,7 @@
 
         statusMessage.textContent =
           "✅ 신청 정보 전송 요청이 완료되었습니다. " +
-          "관리자 확인까지 1~2일 정도 걸릴 수 있습니다.";
+          "관리자 확인까지 5시간 정도 걸릴 수 있습니다.";
 
         form.reset();
         updatePrice();
